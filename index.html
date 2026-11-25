@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>In Prōmptū</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="In Prōmptū">
+<meta name="theme-color" content="#f6f1e7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<style>
+:root{
+  --bg:#f6f1e7; --card:#fffdf8; --ink:#221d14; --soft:#6e6555; --line:#ddd4c2;
+  --accent:#7a2e1f; --good:#2f6b3a; --warn:#9a6a00; --bad:#9c2b2b; --chip:#ece4d3;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#17150f; --card:#201d15; --ink:#ece5d6; --soft:#a39a86; --line:#39342a;
+    --accent:#e0a184; --good:#86c592; --warn:#e0b860; --bad:#ec8f8f; --chip:#2b271d; }
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+#app{position:fixed;left:0;right:0;top:0;height:var(--vh,100dvh);display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);max-width:640px;margin:0 auto}
+header{display:flex;align-items:center;gap:6px;padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);flex:none}
+header h1{font-family:var(--serif);font-size:17px;font-weight:600;margin:0;letter-spacing:.2px;flex:1;white-space:nowrap}
+nav{display:flex;gap:2px}
+nav button{font:inherit;font-size:13px;border:0;background:none;color:var(--soft);padding:8px 7px;border-radius:8px}
+nav button[aria-current="page"]{color:var(--accent);font-weight:600;background:var(--chip)}
+main{flex:1;min-height:0;display:none;flex-direction:column}
+main.on{display:flex}
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(16px + env(safe-area-inset-bottom))}
+#reply.scroll{padding-top:8px}
+
+/* session */
+#stage{flex:none;padding:14px 16px 0}
+#tag{font-size:12px;color:var(--soft);min-height:16px;letter-spacing:.3px}
+#prompt{font-family:var(--serif);font-size:26px;line-height:1.2;margin:4px 0 10px;min-height:32px}
+#f{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);padding:0 12px}
+#f:focus-within{border-color:var(--accent)}
+#f span{color:var(--soft);font-size:20px}
+#ans{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--ink);font-family:var(--serif);font-size:21px;padding:11px 0}
+#hint{font-size:13px;color:var(--warn);margin:6px 2px 0}
+#reply{flex:1;min-height:0}
+.verdict{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:999px;color:#fff}
+.v-right{background:var(--good)} .v-notquite{background:var(--warn)} .v-wrong{background:var(--bad)}
+@media (prefers-color-scheme: dark){ .verdict{color:#17150f} }
+.typed{font-family:var(--serif);font-size:17px;color:var(--soft);margin-left:8px}
+.typed.miss{text-decoration:line-through}
+.expect{font-family:var(--serif);font-size:24px;margin:10px 0 2px;line-height:1.25}
+.forms{font-family:var(--serif);font-size:16px;color:var(--soft);margin-bottom:6px}
+.line{font-family:var(--serif);font-size:17px;line-height:1.4;margin:7px 0}
+.line b{font-weight:600}
+.trap{border-left:3px solid var(--warn);padding-left:10px}
+.ex{font-family:var(--serif);font-size:15px;color:var(--soft);margin-top:12px;line-height:1.4}
+.ex i{color:var(--ink);opacity:.85}
+.back{font-size:13px;color:var(--soft);margin-top:10px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.next{font-size:12px;color:var(--soft)}
+button.b{font:inherit;font-size:15px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:10px 14px;border-radius:10px}
+button.b.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+button.b.small{font-size:13px;padding:7px 11px}
+button.b:disabled{opacity:.45}
+#gate{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px;gap:14px}
+#gate h2{font-family:var(--serif);font-size:28px;font-weight:600;margin:0}
+#gate p{color:var(--soft);margin:0;line-height:1.5;max-width:30em}
+#gate .big{font-size:18px;padding:14px 34px}
+.hide{display:none!important}
+
+/* other screens */
+h2.t{font-family:var(--serif);font-size:20px;margin:4px 0 12px}
+.nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.num{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 10px;text-align:center}
+.num b{display:block;font-family:var(--serif);font-size:28px;font-weight:600}
+.num span{font-size:12px;color:var(--soft)}
+.bar{height:8px;border-radius:99px;background:var(--chip);overflow:hidden;margin:4px 0 4px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.cap{font-size:12px;color:var(--soft);margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12px;color:var(--soft);font-weight:500}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 2px}
+.card p{margin:2px 0;font-size:13px;color:var(--soft)}
+.msg{font-size:14px;margin:10px 0;line-height:1.45;white-space:pre-wrap}
+.msg.err{color:var(--bad)} .msg.ok{color:var(--good)}
+label.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+label.set small{display:block;color:var(--soft);font-size:12px;margin-top:2px}
+label.set input[type=number]{width:74px;font:inherit;font-size:16px;padding:7px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);text-align:center}
+label.set input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+.ver{font-size:12px;color:var(--soft);margin-top:18px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>In Prōmptū</h1>
+    <nav>
+      <button data-tab="session" aria-current="page">Session</button>
+      <button data-tab="progress">Progress</button>
+      <button data-tab="packs">Packs</button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+  </header>
+
+  <main id="session" class="on">
+    <div id="gate"></div>
+    <div id="stage" class="hide">
+      <div id="tag"></div>
+      <div id="prompt"></div>
+      <form id="f" autocomplete="off">
+        <span>›</span>
+        <input id="ans" type="text" inputmode="text" enterkeyhint="go" aria-label="Your Latin answer"
+               autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+      </form>
+      <div id="hint"></div>
+    </div>
+    <div id="reply" class="scroll hide"></div>
+  </main>
+
+  <main id="progress"><div class="scroll" id="progressBody"></div></main>
+  <main id="packs"><div class="scroll" id="packsBody"></div></main>
+  <main id="settings"><div class="scroll" id="settingsBody"></div></main>
+</div>
+<input id="pickPack" type="file" accept=".json,application/json" class="hide">
+<input id="pickBackup" type="file" accept=".json,application/json" class="hide">
+
+<script id="core">
+/* Pure logic: answer judging, scheduling, session order. No DOM, no storage, no clock of its own.
+   test/core.test.js loads this block straight out of the page. */
+const Core = (() => {
+  const CFG = {
+    ladder: [1, 3, 7, 16, 35, 90], // days between right answers
+    fastMs: 3000,                  // prompt -> first keystroke that counts as "without effort"
+    knownStep: 4,                  // right and fast on first sight: jump to the 35-day step
+    masteryCount: 3,               // fast right answers needed...
+    masteryGapDays: 21,            // ...each at least this many days after the one before
+    requeueMin: 3, requeueMax: 5,  // a missed item returns after this many other items
+    sessionRights: 2,              // and must then be right this many times before it leaves
+    newPerDay: 7, sessionMinutes: 10, reviewsPerNew: 3,
+  };
+  const PLACEHOLDERS = new Set(['aliquis','aliquid','aliquem','aliquam','alicui','alicuius','aliquo',
+    'aliqua','aliquos','aliquas','aliquibus','aliquorum','aliquarum','aliquod','aliqui']);
+  const GENDER_WORDS = { m:'m', f:'f', n:'n', c:'c', masc:'m', fem:'f', neut:'n',
+    masculine:'m', feminine:'f', neuter:'n', common:'c' };
+
+  function norm(s) {
+    return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/æ/g, 'ae').replace(/œ/g, 'oe').replace(/v/g, 'u').replace(/j/g, 'i')
+      .replace(/[^a-z]+/g, ' ').trim();
+  }
+  function toks(s) { const n = norm(s); return n ? n.split(' ') : []; }
+  function core(tokens) { const t = tokens.filter(x => !PLACEHOLDERS.has(x)); return t.length ? t : tokens; }
+  function key(tokens) { return core(tokens).slice().sort().join(' '); }
+  // "(nāvem) solvere" -> ["nāvem solvere", "solvere"]
+  function expand(s) {
+    const m = String(s).match(/^(.*?)\(([^)]*)\)(.*)$/);
+    if (!m) return [String(s).replace(/\s+/g, ' ').trim()];
+    return [...expand(m[1] + ' ' + m[2] + ' ' + m[3]), ...expand(m[1] + ' ' + m[3])];
+  }
+  function accepted(item) {
+    const out = [];
+    [item.answer, ...(item.also || [])].forEach((a, i) => expand(a).forEach(v => {
+      const t = toks(v); if (t.length) out.push({ show: v, toks: t, key: key(t), main: i === 0 });
+    }));
+    return out;
+  }
+  // "cubitus, -ī (m.)" -> {head:[cubitus], gen:[i], abbr:true, gender:'m'}; null for anything not a noun
+  function nounForms(item) {
+    if (item.kind !== 'word' || !item.forms) return null;
+    const m = String(item.forms).match(/^(.+?),\s*(.+?)\s*\(\s*([mfnc])\b[^)]*\)\s*$/);
+    if (!m) return null;
+    return { head: toks(m[1]), gen: toks(m[2]), abbr: /^\s*-/.test(m[2]), gender: m[3] };
+  }
+  // optimal string alignment distance (insert, delete, substitute, swap neighbours)
+  function dist(a, b) {
+    const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+    let p2 = null, p1 = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+      const cur = [i];
+      for (let j = 1; j <= n; j++) {
+        const c = a[i - 1] === b[j - 1] ? 0 : 1;
+        let v = Math.min(p1[j] + 1, cur[j - 1] + 1, p1[j - 1] + c);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, p2[j - 2] + 1);
+        cur.push(v);
+      }
+      p2 = p1; p1 = cur;
+    }
+    return p1[n];
+  }
+  function tolerance(letters) { return letters < 5 ? 0 : letters < 10 ? 1 : 2; }
+  function perms(n) {
+    if (n === 1) return [[0]];
+    const out = [];
+    perms(n - 1).forEach(p => { for (let i = 0; i <= p.length; i++) out.push([...p.slice(0, i), n - 1, ...p.slice(i)]); });
+    return out;
+  }
+  function near(userToks, accToks) {
+    const A = core(accToks), U = core(userToks);
+    const tol = tolerance(A.join('').length);
+    if (!tol) return false;
+    // A slip is at most one edit in a word of five letters or more. Two edits in one word is usually
+    // another Latin word (attendere / intendere), so it is judged, not waved through as a typo.
+    if (A.length !== U.length || A.length > 5) return dist(U.join(' '), A.join(' ')) === 1;
+    let d = Infinity;
+    perms(A.length).forEach(p => {
+      let s = 0, fair = true;
+      p.forEach((ai, ui) => { const x = dist(U[ui], A[ai]); if (x > 1 || (x === 1 && A[ai].length < 5)) fair = false; s += x; });
+      if (fair && s < d) d = s;
+    });
+    return d > 0 && d <= tol;
+  }
+
+  /* judge(item, typed, {strictNouns, isRetry}) ->
+     {verdict: 'right'|'notquite'|'wrong'|'blank'|'typo'|'incomplete', matched, trapReply, close, formsWrong}
+     'typo' and 'incomplete' are not answers: the app asks again without revealing anything. */
+  function judge(item, raw, opts) {
+    opts = opts || {};
+    const u = toks(raw);
+    if (!u.length) return { verdict: 'blank' };
+    const acc = accepted(item), k = key(u), nf = nounForms(item);
+    // a trap that turns on the placeholder itself (alicui cōnsulere vs aliquem cōnsulere) is checked word for word first
+    if (u.some(x => PLACEHOLDERS.has(x))) {
+      const full = u.slice().sort().join(' ');
+      for (const t of (item.traps || [])) for (const m of (t.match || [])) {
+        if (expand(m).some(v => toks(v).sort().join(' ') === full)) return { verdict: 'notquite', trapReply: t.reply || '' };
+      }
+    }
+    const hit = acc.find(a => a.key === k);
+    if (hit) {
+      if (opts.strictNouns && nf && hit.main) return { verdict: 'incomplete', matched: hit };
+      return { verdict: 'right', matched: hit };
+    }
+    // noun typed with its genitive and/or gender: "cubitus -i m", "cubitus cubiti"
+    if (nf && u.length > nf.head.length && key(u.slice(0, nf.head.length)) === key(nf.head)) {
+      const extra = u.slice(nf.head.length);
+      const genders = extra.filter(x => GENDER_WORDS[x]), gens = extra.filter(x => !GENDER_WORDS[x]);
+      const genderOk = !genders.length || (genders.length === 1 && GENDER_WORDS[genders[0]] === nf.gender);
+      const genOk = !gens.length || (gens.length === nf.gen.length && gens.every((g, i) =>
+        g === nf.gen[i] || (nf.abbr && g.length > nf.gen[i].length && g.endsWith(nf.gen[i]))));
+      const main = acc.find(a => a.main);
+      if (!genderOk || !genOk) return { verdict: 'notquite', matched: main, formsWrong: true };
+      if (opts.strictNouns && !(genders.length && gens.length)) return { verdict: 'incomplete', matched: main };
+      return { verdict: 'right', matched: main };
+    }
+    for (const t of (item.traps || [])) {
+      for (const m of (t.match || [])) {
+        if (expand(m).some(v => key(toks(v)) === k)) return { verdict: 'notquite', trapReply: t.reply || '' };
+      }
+    }
+    const close = acc.some(a => near(u, a.toks));
+    if (close && !opts.isRetry) return { verdict: 'typo' };
+    return { verdict: 'wrong', close };
+  }
+
+  // local calendar day number; the clock is always passed in
+  function dayOf(ts) { return Math.floor((ts - new Date(ts).getTimezoneOffset() * 60000) / 86400000); }
+  function newState(id) { return { id, step: -1, due: 0, seen: 0, right: 0, miss: 0, intro: 0, last: 0, fast: [], mastered: 0 }; }
+
+  /* One scheduled answer. In-session repeats of a missed item do NOT come through here. */
+  function applyAnswer(state, ans, cfg) {
+    cfg = cfg || CFG;
+    const s = Object.assign(newState(state.id), state, { fast: (state.fast || []).slice() });
+    const first = s.seen === 0, today = dayOf(ans.now), top = cfg.ladder.length - 1;
+    if (first) s.intro = ans.now;
+    s.seen++; s.last = ans.now;
+    if (ans.right) {
+      s.right++;
+      s.step = first ? (ans.fast ? Math.min(cfg.knownStep, top) : 0) : Math.min(s.step + 1, top);
+      if (ans.fast) {
+        const prev = s.fast[s.fast.length - 1];
+        if (prev == null || today - dayOf(prev) >= cfg.masteryGapDays) s.fast.push(ans.now);
+        if (!s.mastered && s.fast.length >= cfg.masteryCount) s.mastered = ans.now;
+      }
+    } else {
+      s.miss++; s.step = 0; s.fast = []; s.mastered = 0;
+    }
+    s.due = today + cfg.ladder[s.step];
+    return s;
+  }
+
+  /* Order for one session: reviews that are due (oldest first), with new items mixed in. */
+  function buildQueue(order, states, now, newAllowed, cfg) {
+    cfg = cfg || CFG;
+    const today = dayOf(now), due = [], fresh = [];
+    order.forEach(id => {
+      const s = states.get(id);
+      if (!s || s.seen === 0) { if (fresh.length < newAllowed) fresh.push(id); }
+      else if (s.due <= today) due.push(id);
+    });
+    due.sort((a, b) => states.get(a).due - states.get(b).due);
+    const q = [];
+    let d = 0, f = 0;
+    while (d < due.length || f < fresh.length) {
+      for (let i = 0; i < cfg.reviewsPerNew && d < due.length; i++) q.push(due[d++]);
+      if (f < fresh.length) q.push(fresh[f++]);
+    }
+    return { queue: q, due: due.length, fresh: fresh.length };
+  }
+
+  function makeSession(queue) { return { queue: queue.slice(), pending: [], asked: [] }; }
+  function wait(cfg, rnd) { return cfg.requeueMin + Math.floor(rnd() * (cfg.requeueMax - cfg.requeueMin + 1)); }
+  /* Next item id, or null when the session is over. A missed item whose wait has run out comes first.
+     If only missed items remain and they are still waiting, filler() may supply an item to stand between. */
+  function nextItem(sess, filler) {
+    const ready = sess.pending.find(p => p.wait <= 0);
+    if (ready) return { id: ready.id, reask: true };
+    if (sess.queue.length) return { id: sess.queue.shift(), reask: false };
+    if (!sess.pending.length) return null;
+    const f = filler ? filler() : null;
+    if (f != null) return { id: f, reask: false, filler: true };
+    const p = sess.pending.slice().sort((a, b) => a.wait - b.wait)[0];
+    return { id: p.id, reask: true };
+  }
+  function sessionAnswered(sess, id, right, cfg, rnd) {
+    cfg = cfg || CFG; rnd = rnd || Math.random;
+    sess.pending.forEach(p => { if (p.id !== id) p.wait--; });
+    sess.asked.push(id);
+    const p = sess.pending.find(x => x.id === id);
+    if (p) {
+      if (right) { p.need--; p.wait = wait(cfg, rnd); if (p.need <= 0) sess.pending = sess.pending.filter(x => x !== p); }
+      else { p.need = cfg.sessionRights; p.wait = wait(cfg, rnd); }
+    } else if (!right) {
+      sess.pending.push({ id, wait: wait(cfg, rnd), need: cfg.sessionRights });
+    }
+  }
+
+  const KINDS = ['word', 'idiom', 'phrase', 'pair'];
+  function validatePack(p) {
+    const errors = [];
+    if (!p || typeof p !== 'object') return { ok: false, errors: ['Not a pack file.'] };
+    if (!p.pack || typeof p.pack !== 'string') errors.push('Missing pack name ("pack").');
+    if (typeof p.version !== 'number') errors.push('Missing numeric "version".');
+    if (!Array.isArray(p.items) || !p.items.length) errors.push('No items.');
+    const seen = new Set();
+    (Array.isArray(p.items) ? p.items : []).forEach((it, i) => {
+      const where = 'Item ' + (i + 1) + (it && it.id ? ' (' + it.id + ')' : '') + ': ';
+      if (!it || typeof it !== 'object') { errors.push(where + 'not an object.'); return; }
+      ['id', 'kind', 'domain', 'prompt', 'answer'].forEach(f => { if (!it[f] || typeof it[f] !== 'string') errors.push(where + 'missing ' + f + '.'); });
+      if (it.kind && !KINDS.includes(it.kind)) errors.push(where + 'kind must be word, idiom, phrase or pair.');
+      if (it.id) { if (seen.has(it.id)) errors.push(where + 'duplicate id.'); seen.add(it.id); }
+      if (!it.example || !it.example.la || !it.example.ref) errors.push(where + 'missing example sentence or its citation.');
+      else if (/ATTESTED SENTENCE|AUTHOR, WORK/.test(it.example.la + it.example.ref)) errors.push(where + 'example is still a placeholder.');
+      if (it.answer && !toks(it.answer).length) errors.push(where + 'answer has no letters.');
+      (it.traps || []).forEach(t => { if (!t || !Array.isArray(t.match) || !t.reply) errors.push(where + 'a trap needs "match" and "reply".'); });
+    });
+    return { ok: !errors.length, errors };
+  }
+
+  return { CFG, norm, toks, key, expand, accepted, nounForms, dist, near, judge, dayOf, newState,
+    applyAnswer, buildQueue, makeSession, nextItem, sessionAnswered, validatePack };
+})();
+if (typeof module !== 'undefined') module.exports = Core;
+</script>
+
+<script>
+(() => {
+'use strict';
+const APP_VERSION = '0911096d34'; /*STAMP*/
+const GOAL = 10000;
+const $ = id => document.getElementById(id);
+const now = () => Date.now();
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function btn(label, cls, fn) { const b = el('button', 'b ' + (cls || ''), label); b.type = 'button'; b.addEventListener('click', fn); return b; }
+
+/* ---------- storage (IndexedDB) ---------- */
+let db;
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('in-promptu', 1);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      d.createObjectStore('packs', { keyPath: 'pack' });
+      d.createObjectStore('progress', { keyPath: 'id' });
+      d.createObjectStore('log', { keyPath: 'n', autoIncrement: true });
+      d.createObjectStore('kv');
+    };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+function tx(stores, mode, fn) {
+  return new Promise((res, rej) => {
+    const t = db.transaction(stores, mode); let out;
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    out = fn(...[].concat(stores).map(s => t.objectStore(s)));
+  });
+}
+const all = store => new Promise((res, rej) => { const r = db.transaction(store).objectStore(store).getAll(); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+const kvGet = k => new Promise((res, rej) => { const r = db.transaction('kv').objectStore('kv').get(k); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+const kvSet = (k, v) => tx('kv', 'readwrite', s => { s.put(v, k); });
+
+/* ---------- state ---------- */
+const packs = new Map();     // name -> pack
+const items = new Map();     // id -> item
+let order = [];              // item ids, pack by pack, in pack order
+const states = new Map();    // id -> schedule state
+let logCount = 0;
+let settings = { newPerDay: Core.CFG.newPerDay, sessionMinutes: Core.CFG.sessionMinutes, strictNouns: false };
+let daily = { day: 0, introduced: 0, extra: 0 };
+let S = null;                // the running session
+let updateWaiting = false;
+
+function reindex() {
+  items.clear(); order = [];
+  [...packs.values()].sort((a, b) => (a.importedAt || 0) - (b.importedAt || 0)).forEach(p => {
+    p.items.forEach(it => { if (!items.has(it.id)) order.push(it.id); items.set(it.id, it); });
+  });
+}
+function today() { return Core.dayOf(now()); }
+function rollDay() { if (daily.day !== today()) { daily = { day: today(), introduced: 0, extra: 0 }; kvSet('daily', daily); } }
+function newAllowed() { rollDay(); return Math.max(0, settings.newPerDay + daily.extra - daily.introduced); }
+function counts() {
+  let introduced = 0, mastered = 0, due = 0, fresh = 0; const t = today();
+  order.forEach(id => { const s = states.get(id);
+    if (s && s.seen) { introduced++; if (s.mastered) mastered++; if (s.due <= t) due++; } else fresh++; });
+  return { total: order.length, introduced, mastered, due, fresh };
+}
+
+/* ---------- session ---------- */
+const ans = $('ans'), gate = $('gate'), stage = $('stage'), reply = $('reply');
+function focusAns() { try { ans.focus({ preventScroll: true }); } catch (e) { ans.focus(); } }
+
+function showGate() {
+  S = null; stage.classList.add('hide'); reply.classList.add('hide'); gate.classList.remove('hide'); gate.textContent = '';
+  if (!order.length) {
+    gate.append(el('h2', '', 'In Prōmptū'), el('p', '', 'No vocabulary yet. Packs hold all the content; install the starter pack or import a pack file to begin.'));
+    gate.append(btn('Install the starter pack', 'primary big', installStarter), btn('Import a pack file', '', () => $('pickPack').click()));
+    return;
+  }
+  const c = counts(), n = Math.min(newAllowed(), c.fresh);
+  gate.append(el('h2', '', 'In Prōmptū'));
+  if (c.due || n) {
+    gate.append(el('p', '', (c.due ? c.due + ' to review' : 'Nothing to review') + (n ? ' · ' + n + ' new' : '')));
+    gate.append(btn('Begin', 'primary big', () => startSession()));
+  } else {
+    gate.append(el('p', '', c.fresh ? 'Nothing is due, and today’s new items are done.' : 'Nothing is due. Every item in your packs has been introduced.'));
+    if (c.fresh) gate.append(btn(Math.min(settings.newPerDay, c.fresh) + ' more new items', 'primary', moreNew));
+  }
+}
+function moreNew() { rollDay(); daily.extra += settings.newPerDay; kvSet('daily', daily); startSession(); }
+
+function startSession() {
+  const q = Core.buildQueue(order, states, now(), newAllowed());
+  if (!q.queue.length) { showGate(); return; }
+  S = { sess: Core.makeSession(q.queue), activeMs: 0, timeUp: false, cur: null, phase: 'prompt', repliedAt: 0,
+        stats: { answers: 0, right: 0, missed: new Set(), fresh: 0 } };
+  gate.classList.add('hide'); stage.classList.remove('hide'); reply.classList.remove('hide');
+  focusAns();          // inside the tap, so iOS raises the keyboard
+  showNext();
+}
+function filler() {
+  // something already introduced, not asked in the last few turns, to stand between repeats of a missed item
+  const recent = new Set(S.sess.asked.slice(-4)), waiting = new Set(S.sess.pending.map(p => p.id));
+  const pool = order.filter(id => { const s = states.get(id); return s && s.seen && !recent.has(id) && !waiting.has(id); });
+  return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+}
+function showNext() {
+  if (updateWaiting) { location.reload(); return; }
+  if (!S.timeUp && S.activeMs >= settings.sessionMinutes * 60000) { S.timeUp = true; S.sess.queue = []; }
+  S.sess.queue = S.sess.queue.filter(id => items.has(id));        // a pack may have been removed or replaced
+  S.sess.pending = S.sess.pending.filter(p => items.has(p.id));
+  const nx = Core.nextItem(S.sess, filler);
+  if (!nx) { endSession(); return; }
+  const item = items.get(nx.id);
+  if (!item) { showNext(); return; }
+  const st = states.get(nx.id);
+  S.cur = { id: nx.id, item, reask: nx.reask, filler: !!nx.filler, fresh: !st || !st.seen, shownAt: now(), firstKey: null, hidden: false, attempt: 0 };
+  S.phase = 'prompt';
+  $('tag').textContent = S.cur.fresh ? 'new · ' + item.domain : item.domain;
+  $('prompt').textContent = item.prompt;
+  $('hint').textContent = '';
+  ans.value = ''; reply.textContent = ''; reply.scrollTop = 0;
+  ans.setAttribute('enterkeyhint', 'go');
+  focusAns();
+}
+function fastNow() { const c = S.cur; return c.firstKey != null && !c.hidden && (c.firstKey - c.shownAt) < Core.CFG.fastMs; }
+
+function submit() {
+  if (!S || !S.cur) return;
+  if (S.phase === 'reply') { if (now() - S.repliedAt > 350) showNext(); return; }
+  const c = S.cur, raw = ans.value;
+  const res = Core.judge(c.item, raw, { strictNouns: settings.strictNouns, isRetry: c.attempt > 0 });
+  if (res.verdict === 'typo') { c.attempt++; $('hint').textContent = 'Almost. Check the spelling and try once more.'; return; }
+  if (res.verdict === 'incomplete') { $('hint').textContent = 'Add the genitive and the gender, for example: cubitus -i m'; return; }
+  const right = res.verdict === 'right';
+  c.raw = raw.trim(); c.res = res; c.answeredAt = now(); c.fast = right && fastNow();
+  S.activeMs += Math.min(c.answeredAt - c.shownAt, 60000);
+  S.stats.answers++; if (right) S.stats.right++; else S.stats.missed.add(c.id);
+  c.prevState = states.get(c.id) || null;
+  c.sessSnap = JSON.stringify(S.sess);
+  if (!c.reask && !(c.filler && right)) schedule(c, right, c.fast);
+  Core.sessionAnswered(S.sess, c.id, right);
+  S.phase = 'reply'; S.repliedAt = now();
+  ans.value = ''; ans.setAttribute('enterkeyhint', 'next');
+  renderReply(c, res, false);
+}
+function schedule(c, right, fast) {
+  const prev = c.prevState || Core.newState(c.id);
+  const st = Core.applyAnswer(prev, { right, fast, now: c.answeredAt });
+  states.set(c.id, st);
+  const firstSight = !c.prevState || !c.prevState.seen;
+  if (firstSight && !c.counted) { c.counted = true; rollDay(); daily.introduced++; S.stats.fresh++; kvSet('daily', daily); }
+  tx('progress', 'readwrite', s => { s.put(st); });
+}
+function iWasRight() {
+  const c = S.cur; if (!c || S.phase !== 'reply' || c.overridden || !c.raw) return;
+  c.overridden = true;
+  const entry = { ts: c.answeredAt, id: c.id, pack: c.item._pack || '', prompt: c.item.prompt, typed: c.raw, expected: c.item.answer };
+  tx('log', 'readwrite', s => { s.add(entry); }); logCount++;
+  S.sess = JSON.parse(c.sessSnap);                       // undo the miss in this session...
+  Core.sessionAnswered(S.sess, c.id, true);              // ...and count it right instead
+  if (!c.reask && !c.filler) schedule(c, true, fastNow());
+  else if (!c.reask && c.filler) { if (c.prevState) { states.set(c.id, c.prevState); tx('progress', 'readwrite', s => { s.put(c.prevState); }); } }
+  S.stats.right++; S.stats.missed.delete(c.id);
+  renderReply(c, { verdict: 'right', matched: null }, true);
+  focusAns();
+}
+
+function renderReply(c, res, overridden) {
+  const it = c.item; reply.textContent = '';
+  const v = res.verdict, cls = v === 'right' ? 'v-right' : v === 'notquite' ? 'v-notquite' : 'v-wrong';
+  const head = el('div');
+  head.append(el('span', 'verdict ' + cls, v === 'right' ? 'RIGHT' : v === 'notquite' ? 'NOT QUITE' : 'WRONG'));
+  if (c.raw) head.append(el('span', 'typed' + (v === 'right' ? '' : ' miss'), c.raw));
+  reply.append(head);
+  if (overridden) reply.append(el('div', 'line', 'Counted as right, and logged so it can go into the next pack.'));
+  if (res.trapReply) reply.append(el('div', 'line trap', res.trapReply));
+  if (res.formsWrong) reply.append(el('div', 'line trap', 'Right word, wrong forms.'));
+  if (v === 'wrong' && res.close) reply.append(el('div', 'line trap', 'Close, but the spelling is off.'));
+  const viaVariant = v === 'right' && res.matched && !res.matched.main;
+  reply.append(el('div', 'expect', viaVariant ? res.matched.show : it.answer));
+  if (it.forms && !viaVariant) reply.append(el('div', 'forms', it.forms));
+  // after a variant, the usual form is shown with its genitive and gender (or principal parts)
+  const others = [it.answer, ...(it.also || [])].filter(a => !(viaVariant ? Core.expand(a).includes(res.matched.show) : a === it.answer))
+    .map(a => (viaVariant && a === it.answer && it.forms) ? it.forms : a);
+  if (others.length) { const d = el('div', 'line'); d.append(el('b', '', viaVariant ? 'Usual: ' : 'Also: '), document.createTextNode(others.join('; ') + '.')); reply.append(d); }
+  (it.opposites || []).forEach(o => { const d = el('div', 'line'); d.append(el('b', '', 'Opposite: '), document.createTextNode(o.la + (o.en ? ' (' + o.en + ').' : '.'))); reply.append(d); });
+  if (it.note) reply.append(el('div', 'line', it.note));
+  if (it.example && it.example.la) { const d = el('div', 'ex'); d.append(el('i', '', it.example.la), document.createTextNode('  ' + it.example.ref)); reply.append(d); }
+  if (v !== 'right') reply.append(el('div', 'back', 'Back in a few items.'));
+  const row = el('div', 'row');
+  if (v === 'wrong' && c.raw && !overridden) {
+    const b = btn('I was right', 'small', iWasRight);
+    b.addEventListener('pointerdown', e => e.preventDefault());   // keep the keyboard up
+    row.append(b);
+  }
+  row.append(el('span', 'next', 'return for the next item'));
+  reply.append(row);
+}
+
+function endSession() {
+  const st = S.stats; S = null;
+  stage.classList.add('hide'); reply.classList.add('hide'); gate.classList.remove('hide'); gate.textContent = '';
+  ans.blur();
+  const c = counts();
+  gate.append(el('h2', '', 'Satis est.'));
+  gate.append(el('p', '', st.answers + ' answers · ' + st.right + ' right · ' + st.missed.size + ' missed' + (st.fresh ? ' · ' + st.fresh + ' new' : '')));
+  gate.append(el('p', '', c.introduced + ' introduced · ' + c.mastered + ' mastered'));
+  if (c.due) gate.append(btn('Keep going (' + c.due + ' still due)', 'primary', () => startSession()));
+  else if (c.fresh) gate.append(btn(Math.min(settings.newPerDay, c.fresh) + ' more new items', '', moreNew));
+}
+
+$('f').addEventListener('submit', e => { e.preventDefault(); submit(); });
+ans.addEventListener('beforeinput', e => { if (S && S.phase === 'reply' && e.inputType !== 'insertLineBreak') e.preventDefault(); });
+ans.addEventListener('input', () => { if (S && S.cur && S.phase === 'prompt' && S.cur.firstKey == null) S.cur.firstKey = now(); if ($('hint').textContent && S && S.cur && !S.cur.attempt) $('hint').textContent = ''; });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (S && S.cur && S.phase === 'prompt') S.cur.hidden = true; }
+  else if (swReg) swReg.update().catch(() => {});
+});
+
+/* ---------- packs ---------- */
+let packMsg = null;
+async function importPackObject(obj) {
+  const v = Core.validatePack(obj);
+  if (!v.ok) return { ok: false, text: 'Not imported.\n' + v.errors.slice(0, 8).join('\n') + (v.errors.length > 8 ? '\n… and ' + (v.errors.length - 8) + ' more.' : '') };
+  const old = packs.get(obj.pack);
+  const oldIds = new Set(old ? old.items.map(i => i.id) : []);
+  const pack = { pack: obj.pack, version: obj.version, noteLanguage: obj.noteLanguage || 'en', importedAt: old ? old.importedAt : now(), updatedAt: now(),
+    items: obj.items.map(i => Object.assign({}, i, { _pack: obj.pack })) };
+  const added = pack.items.filter(i => !oldIds.has(i.id)).length, kept = pack.items.filter(i => states.has(i.id)).length;
+  await tx('packs', 'readwrite', s => { s.put(pack); });
+  packs.set(pack.pack, pack); reindex();
+  return { ok: true, text: (old ? 'Updated “' + pack.pack + '” from version ' + old.version + ' to ' + pack.version : 'Imported “' + pack.pack + '” version ' + pack.version)
+    + ': ' + pack.items.length + ' items' + (old ? ', ' + added + ' new' : '') + '. Progress kept for ' + kept + '.' };
+}
+async function installStarter() {
+  try { const r = await fetch('packs/specimen.json'); packMsg = await importPackObject(await r.json()); }
+  catch (e) { packMsg = { ok: false, text: 'The starter pack could not be read: ' + e.message }; }
+  renderPacks(); showGate(); if (!packMsg.ok) go('packs');
+}
+function readFile(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsText(file); }); }
+$('pickPack').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { packMsg = await importPackObject(JSON.parse(await readFile(f))); } catch (err) { packMsg = { ok: false, text: 'Not imported: the file is not valid JSON.' }; }
+  go('packs'); if (!S) showGate();
+});
+function renderPacks() {
+  const b = $('packsBody'); b.textContent = '';
+  b.append(el('h2', 't', 'Packs'));
+  if (packMsg) b.append(el('div', 'msg ' + (packMsg.ok ? 'ok' : 'err'), packMsg.text));
+  if (!packs.size) b.append(el('p', 'cap', 'No packs installed.'));
+  packs.forEach(p => {
+    const c = el('div', 'card');
+    c.append(el('h3', '', p.pack), el('p', '', 'Version ' + p.version + ' · ' + p.items.length + ' items · ' + new Date(p.updatedAt || p.importedAt).toLocaleDateString()));
+    const rm = btn('Remove', 'small', async () => {
+      if (rm.dataset.sure !== '1') { rm.dataset.sure = '1'; rm.textContent = 'Tap again to remove (progress is kept)'; return; }
+      await tx('packs', 'readwrite', s => { s.delete(p.pack); }); packs.delete(p.pack); reindex();
+      packMsg = { ok: true, text: 'Removed “' + p.pack + '”. Its progress is kept in case you import it again.' }; renderPacks(); showGate();
+    });
+    const r = el('div', 'row'); r.append(rm); c.append(r); b.append(c);
+  });
+  const r = el('div', 'row');
+  r.append(btn('Import a pack file', 'primary', () => $('pickPack').click()));
+  if (!packs.has('specimen')) r.append(btn('Install the starter pack', '', installStarter));
+  b.append(r);
+  b.append(el('p', 'cap', 'Importing a newer version of a pack replaces its items and keeps your progress, which is stored against each item’s id.'));
+}
+
+/* ---------- progress ---------- */
+function renderProgress() {
+  const b = $('progressBody'); b.textContent = '';
+  const c = counts();
+  b.append(el('h2', 't', 'Progress'));
+  const nums = el('div', 'nums');
+  [[c.introduced, 'introduced'], [c.mastered, 'mastered'], [c.due, 'due today']].forEach(([n, l]) => { const d = el('div', 'num'); d.append(el('b', '', String(n)), el('span', '', l)); nums.append(d); });
+  b.append(nums);
+  const bar = el('div', 'bar'), fill = el('i'); fill.style.width = Math.min(100, c.mastered / GOAL * 100) + '%'; bar.append(fill); b.append(bar);
+  b.append(el('p', 'cap', c.mastered + ' of ' + GOAL.toLocaleString() + ' mastered · ' + c.total + ' items in your packs'));
+  const by = new Map();
+  order.forEach(id => { const it = items.get(id), s = states.get(id); const d = by.get(it.domain) || { n: 0, i: 0, m: 0 }; d.n++; if (s && s.seen) { d.i++; if (s.mastered) d.m++; } by.set(it.domain, d); });
+  if (by.size) {
+    const t = el('table'), h = el('tr'); ['Domain', 'Items', 'Introduced', 'Mastered'].forEach(x => h.append(el('th', '', x))); t.append(h);
+    by.forEach((d, name) => { const r = el('tr'); [name, d.n, d.i, d.m].forEach(x => r.append(el('td', '', String(x)))); t.append(r); });
+    b.append(t);
+  }
+  b.append(el('p', 'cap', 'Mastered means answered right, starting to type within about three seconds, on three reviews at least three weeks apart.'));
+}
+
+/* ---------- settings, backup ---------- */
+let setMsg = null;
+async function deliver(name, obj) {
+  const text = JSON.stringify(obj, null, 1);
+  const file = new File([text], name, { type: 'application/json' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file] }); return 'shared'; } catch (e) { if (e && e.name === 'AbortError') return 'cancelled'; }
+  }
+  const a = el('a'); a.href = URL.createObjectURL(file); a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000); return 'saved';
+}
+function stamp() { const d = new Date(), p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()); }
+async function makeBackup() {
+  return { app: 'in-promptu', kind: 'backup', format: 1, exportedAt: new Date().toISOString(), settings, daily,
+    progress: [...states.values()], log: await all('log'), packs: [...packs.values()] };
+}
+async function restoreBackup(obj) {
+  if (!obj || obj.app !== 'in-promptu' || obj.kind !== 'backup' || !Array.isArray(obj.progress)) throw new Error('That file is not an In Prōmptū backup.');
+  await tx(['packs', 'progress', 'log', 'kv'], 'readwrite', (pk, pr, lg, kv) => {
+    pk.clear(); pr.clear(); lg.clear();
+    (obj.packs || []).forEach(p => pk.put(p)); obj.progress.forEach(s => pr.put(s));
+    (obj.log || []).forEach(l => { const c = Object.assign({}, l); delete c.n; lg.add(c); });
+    kv.put(Object.assign({}, settings, obj.settings || {}), 'settings'); if (obj.daily) kv.put(obj.daily, 'daily');
+  });
+  await load();
+}
+$('pickBackup').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { const obj = JSON.parse(await readFile(f)); await restoreBackup(obj); setMsg = { ok: true, text: 'Restored: ' + states.size + ' items of progress, ' + packs.size + ' pack(s).' }; }
+  catch (err) { setMsg = { ok: false, text: 'Not restored. ' + err.message }; }
+  go('settings'); showGate();
+});
+function renderSettings() {
+  const b = $('settingsBody'); b.textContent = '';
+  b.append(el('h2', 't', 'Settings'));
+  const num = (label, sub, key, min, max) => {
+    const l = el('label', 'set'), d = el('div'); d.append(document.createTextNode(label)); if (sub) d.append(el('small', '', sub));
+    const i = el('input'); i.type = 'number'; i.min = min; i.max = max; i.value = settings[key]; i.inputMode = 'numeric';
+    i.addEventListener('change', () => { const v = Math.max(min, Math.min(max, Math.round(+i.value || min))); i.value = v; settings[key] = v; kvSet('settings', settings); if (!S) showGate(); });
+    l.append(d, i); return l;
+  };
+  b.append(num('New items a day', 'Seven a day is about 2,500 a year.', 'newPerDay', 0, 100));
+  b.append(num('Session length, minutes', 'No new items start after this; missed items still finish.', 'sessionMinutes', 1, 60));
+  const l = el('label', 'set'), d = el('div'); d.append(document.createTextNode('Strict nouns'), el('small', '', 'A noun counts only with its genitive and gender, typed like: cubitus -i m'));
+  const cb = el('input'); cb.type = 'checkbox'; cb.checked = !!settings.strictNouns; cb.addEventListener('change', () => { settings.strictNouns = cb.checked; kvSet('settings', settings); });
+  l.append(d, cb); b.append(l);
+
+  b.append(el('h2', 't', 'Backup'));
+  b.append(el('p', 'cap', 'iOS can clear a web app’s storage. A backup file holds your progress, your packs and the “I was right” log.'));
+  if (setMsg) b.append(el('div', 'msg ' + (setMsg.ok ? 'ok' : 'err'), setMsg.text));
+  const r = el('div', 'row');
+  r.append(btn('Export backup', 'primary', async () => { const how = await deliver('in-promptu-backup_' + stamp() + '.json', await makeBackup()); if (how !== 'cancelled') { setMsg = { ok: true, text: 'Backup written (' + states.size + ' items of progress).' }; kvSet('lastBackup', now()); renderSettings(); } }));
+  const imp = btn('Restore from backup', '', () => { if (imp.dataset.sure !== '1' && states.size) { imp.dataset.sure = '1'; imp.textContent = 'Tap again: this replaces everything on this phone'; return; } $('pickBackup').click(); });
+  r.append(imp); b.append(r);
+  const r2 = el('div', 'row');
+  const ex = btn('Export “I was right” log (' + logCount + ')', '', async () => { await deliver('in-promptu-i-was-right_' + stamp() + '.json', { app: 'in-promptu', kind: 'i-was-right', exportedAt: new Date().toISOString(), entries: await all('log') }); });
+  ex.disabled = !logCount; r2.append(ex);
+  const cl = btn('Clear log', 'small', async () => { if (cl.dataset.sure !== '1') { cl.dataset.sure = '1'; cl.textContent = 'Tap again to clear'; return; } await tx('log', 'readwrite', s => { s.clear(); }); logCount = 0; renderSettings(); });
+  cl.disabled = !logCount; r2.append(cl); b.append(r2);
+  b.append(el('p', 'ver', 'Version ' + APP_VERSION + (navigator.serviceWorker && navigator.serviceWorker.controller ? ' · available offline' : '')));
+}
+
+/* ---------- tabs ---------- */
+function go(tab) {
+  document.querySelectorAll('main').forEach(m => m.classList.toggle('on', m.id === tab));
+  document.querySelectorAll('nav button').forEach(b => { if (b.dataset.tab === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  if (tab === 'progress') renderProgress();
+  if (tab === 'packs') renderPacks();
+  if (tab === 'settings') renderSettings();
+  if (tab === 'session') { if (S) focusAns(); else showGate(); } else if (tab !== 'packs') packMsg = null;
+  if (tab !== 'settings') setMsg = null;
+}
+document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.tab)));
+
+/* ---------- keyboard-aware height ---------- */
+const vv = window.visualViewport;
+function fit() { if (!vv) return; const a = $('app'); a.style.setProperty('--vh', vv.height + 'px'); a.style.top = vv.offsetTop + 'px'; }
+if (vv) { vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); fit(); }
+
+/* ---------- offline: service worker ---------- */
+let swReg = null;
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  let had = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').then(r => { swReg = r; }).catch(() => {});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!had) { had = true; return; }               // first install: nothing to replace
+    if (S && S.phase === 'prompt' && ans.value) updateWaiting = true;   // finish this answer first
+    else if (S && S.phase === 'reply') updateWaiting = true;
+    else location.reload();
+  });
+}
+
+/* ---------- boot ---------- */
+async function load() {
+  packs.clear(); states.clear();
+  (await all('packs')).forEach(p => packs.set(p.pack, p));
+  (await all('progress')).forEach(s => states.set(s.id, s));
+  logCount = (await all('log')).length;
+  settings = Object.assign({ newPerDay: Core.CFG.newPerDay, sessionMinutes: Core.CFG.sessionMinutes, strictNouns: false }, await kvGet('settings') || {});
+  daily = await kvGet('daily') || daily;
+  reindex(); rollDay();
+}
+(async () => {
+  try {
+    db = await openDB(); await load();
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  } catch (e) { gate.textContent = 'Storage could not be opened: ' + (e && e.message); return; }
+  showGate();
+  window.__ready = true;
+})();
+window.__app = { get S() { return S; }, states, items, packs, counts, Core, restoreBackup, makeBackup, importPackObject, version: APP_VERSION };
+})();
+</script>
+</body>
+</html>

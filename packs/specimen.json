@@ -1,0 +1,832 @@
+{
+ "pack": "specimen",
+ "version": 1,
+ "noteLanguage": "en",
+ "items": [
+  {
+   "id": "limen",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "threshold",
+   "answer": "līmen",
+   "forms": "līmen, -inis (n.)",
+   "example": {
+    "la": "patres hi quos videtis iacebant in limine",
+    "ref": "Cic. Verr. 2.5.118"
+   }
+  },
+  {
+   "id": "tectum",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "roof",
+   "answer": "tēctum",
+   "forms": "tēctum, -ī (n.)",
+   "note": "By extension a house, a shelter: sub tēctō, indoors.",
+   "example": {
+    "la": "Sub hoc ille tecto tam sordido stetit",
+    "ref": "Sen. Ep. 86.5"
+   }
+  },
+  {
+   "id": "paries",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "wall (of a house or room)",
+   "answer": "pariēs",
+   "forms": "pariēs, -etis (m.)",
+   "traps": [
+    {
+     "match": [
+      "mūrus",
+      "moenia"
+     ],
+     "reply": "That's a city or defensive wall. The wall of a house is pariēs."
+    }
+   ],
+   "example": {
+    "la": "si enim nihil est in parietibus aut in tecto viti",
+    "ref": "Cic. Fam. 9.15.5"
+   }
+  },
+  {
+   "id": "fenestra",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "window",
+   "answer": "fenestra",
+   "forms": "fenestra, -ae (f.)",
+   "example": {
+    "la": "fenestrarum angustias quod reprehendis",
+    "ref": "Cic. Att. 2.3.2"
+   }
+  },
+  {
+   "id": "clavis",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "key",
+   "answer": "clāvis",
+   "forms": "clāvis, -is (f.)",
+   "traps": [
+    {
+     "match": [
+      "clāvus"
+     ],
+     "reply": "That's clāvus, the nail. A key is clāvis, -is (f.)."
+    }
+   ],
+   "example": {
+    "la": "ex duodecim tabulis clavis ademit, exegit.",
+    "ref": "Cic. Phil. 2.69"
+   }
+  },
+  {
+   "id": "cardo",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "hinge",
+   "answer": "cardō",
+   "forms": "cardō, -inis (m.)",
+   "example": {
+    "la": "cardines in foribus diutius immoti",
+    "ref": "Plin. NH 16.230"
+   }
+  },
+  {
+   "id": "scalae",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "ladder",
+   "answer": "scālae",
+   "forms": "scālae, -ārum (f. pl.)",
+   "note": "Plural only. Also a staircase.",
+   "example": {
+    "la": "scalis vallum ascendere coeperunt.",
+    "ref": "Caes. BG 5.43.3"
+   }
+  },
+  {
+   "id": "situla",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "bucket",
+   "answer": "situla",
+   "forms": "situla, -ae (f.)",
+   "example": {
+    "la": "lapides congerentem in situlam monimenti",
+    "ref": "Plin. NH 10.125"
+   }
+  },
+  {
+   "id": "cinis",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "ashes",
+   "answer": "cinis",
+   "forms": "cinis, -eris (m.)",
+   "example": {
+    "la": "vel cum cinis in foco concrescit",
+    "ref": "Plin. NH 18.358"
+   }
+  },
+  {
+   "id": "scintilla",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "spark",
+   "answer": "scintilla",
+   "forms": "scintilla, -ae (f.)",
+   "example": {
+    "la": "non aliter quam scintilla flatu levi adiuta ignem suum explicat",
+    "ref": "Sen. Ep. 94.29"
+   }
+  },
+  {
+   "id": "poculum",
+   "kind": "word",
+   "domain": "house",
+   "prompt": "cup",
+   "answer": "pōculum",
+   "forms": "pōculum, -ī (n.)",
+   "example": {
+    "la": "Graeci enim in conviviis solent nominare, cui poculum tradituri sint.",
+    "ref": "Cic. Tusc. 1.96"
+   }
+  },
+  {
+   "id": "poculum-exhaurire",
+   "kind": "idiom",
+   "domain": "house",
+   "prompt": "to drain a cup",
+   "answer": "pōculum exhaurīre",
+   "note": "exhaurīre: to draw off to the last drop.",
+   "example": {
+    "la": "poculum exhausit.",
+    "ref": "Liv. 39.51.12"
+   }
+  },
+  {
+   "id": "clavus",
+   "kind": "word",
+   "domain": "tools",
+   "prompt": "nail",
+   "answer": "clāvus",
+   "forms": "clāvus, -ī (m.)",
+   "traps": [
+    {
+     "match": [
+      "clāvis"
+     ],
+     "reply": "That's clāvis, the key. A nail is clāvus, -ī (m.)."
+    }
+   ],
+   "example": {
+    "la": "confixa clavis ferreis digiti pollicis crassitudine",
+    "ref": "Caes. BG 3.13.4"
+   }
+  },
+  {
+   "id": "clavum-figere",
+   "kind": "idiom",
+   "domain": "tools",
+   "prompt": "to drive a nail",
+   "answer": "clāvum fīgere",
+   "also": [
+    "clāvum pangere"
+   ],
+   "note": "pangere stands in the old law Livy quotes (7.3.5).",
+   "example": {
+    "la": "ea religione adductus senatus dictatorem clavi figendi causa dici iussit.",
+    "ref": "Liv. 7.3.4"
+   }
+  },
+  {
+   "id": "funis",
+   "kind": "word",
+   "domain": "tools",
+   "prompt": "rope",
+   "answer": "fūnis",
+   "forms": "fūnis, -is (m.)",
+   "also": [
+    "restis"
+   ],
+   "traps": [
+    {
+     "match": [
+      "rūpēs"
+     ],
+     "reply": "That's a cliff. Rope is fūnis, -is (m.)."
+    }
+   ],
+   "example": {
+    "la": "cum essent funibus, ancoris reliquisque armamentis amissis ad navigandum inutiles",
+    "ref": "Caes. BG 4.29.3"
+   }
+  },
+  {
+   "id": "nodus",
+   "kind": "word",
+   "domain": "tools",
+   "prompt": "knot",
+   "answer": "nōdus",
+   "forms": "nōdus, -ī (m.)",
+   "example": {
+    "la": "Notabile erat iugum adstrictum compluribus nodis in semetipsos inplicatis et celantibus nexus.",
+    "ref": "Curt. 3.1.15"
+   }
+  },
+  {
+   "id": "hamus",
+   "kind": "word",
+   "domain": "tools",
+   "prompt": "fishhook",
+   "answer": "hāmus",
+   "forms": "hāmus, -ī (m.)",
+   "example": {
+    "la": "hamumque de cubiculo ac paene etiam de lectulo ut e naucula iacere.",
+    "ref": "Plin. Ep. 9.7.4"
+   }
+  },
+  {
+   "id": "cubitus",
+   "kind": "word",
+   "domain": "body",
+   "prompt": "elbow",
+   "answer": "cubitus",
+   "forms": "cubitus, -ī (m.)",
+   "also": [
+    "cubitum"
+   ],
+   "note": "From cubāre, to lie down.",
+   "traps": [
+    {
+     "match": [
+      "cubiculum",
+      "cubiculus"
+     ],
+     "reply": "That's cubiculum, the bedroom."
+    }
+   ],
+   "example": {
+    "la": "ubi in vicinia cubiti umerus fractus est",
+    "ref": "Cels. 8.10"
+   }
+  },
+  {
+   "id": "livor",
+   "kind": "word",
+   "domain": "body",
+   "prompt": "bruise",
+   "answer": "līvor",
+   "forms": "līvor, -ōris (m.)",
+   "note": "Also envy.",
+   "traps": [
+    {
+     "match": [
+      "contūsiō"
+     ],
+     "reply": "That's the English word. The mark a blow leaves is līvor, -ōris (m.)."
+    }
+   ],
+   "example": {
+    "la": "Quod si facie contusa livor subcruentus est",
+    "ref": "Cels. 5.18.24"
+   }
+  },
+  {
+   "id": "cortex",
+   "kind": "word",
+   "domain": "nature",
+   "prompt": "bark (of a tree)",
+   "answer": "cortex",
+   "forms": "cortex, -icis (m.)",
+   "traps": [
+    {
+     "match": [
+      "corium"
+     ],
+     "reply": "That's hide, leather. The bark of a tree is cortex, -icis (m.)."
+    }
+   ],
+   "example": {
+    "la": "prius se cortice ex arboribus victuros, quam Pompeium e manibus dimissuros.",
+    "ref": "Caes. BC 3.49.1"
+   }
+  },
+  {
+   "id": "spina",
+   "kind": "word",
+   "domain": "nature",
+   "prompt": "thorn",
+   "answer": "spīna",
+   "forms": "spīna, -ae (f.)",
+   "note": "Also the backbone.",
+   "example": {
+    "la": "sed eius generis, quod spinas non habet",
+    "ref": "Col. 6.3.7"
+   }
+  },
+  {
+   "id": "lapillus",
+   "kind": "word",
+   "domain": "nature",
+   "prompt": "pebble",
+   "answer": "lapillus",
+   "forms": "lapillus, -ī (m.)",
+   "also": [
+    "calculus"
+   ],
+   "traps": [
+    {
+     "match": [
+      "lapis"
+     ],
+     "reply": "That's a stone of any size. A pebble is its diminutive, lapillus; calculus too."
+    }
+   ],
+   "example": {
+    "la": "correptisque opperiri lapillis, mobilitatem pondere stabilientes",
+    "ref": "Plin. NH 9.100"
+   }
+  },
+  {
+   "id": "penna",
+   "kind": "word",
+   "domain": "nature",
+   "prompt": "feather (of a wing or tail)",
+   "answer": "penna",
+   "forms": "penna, -ae (f.)",
+   "also": [
+    "pinna"
+   ],
+   "note": "Columella sets plūma, the soft plumage of the body, beside pinnae, the wing and tail feathers (8.2.7).",
+   "example": {
+    "la": "penna vulturina subiecta pedibus adiuvat parturientes.",
+    "ref": "Plin. NH 30.130"
+   }
+  },
+  {
+   "id": "pluma",
+   "kind": "word",
+   "domain": "nature",
+   "prompt": "down, soft plumage",
+   "answer": "plūma",
+   "forms": "plūma, -ae (f.)",
+   "note": "Also a feather as the type of lightness: plūmā aut foliō facilius (Cic. Att. 8.15.2).",
+   "example": {
+    "la": "hoc tenui pluma completum dolium ore in cuniculum verso posuerunt.",
+    "ref": "Liv. 38.7.11"
+   }
+  },
+  {
+   "id": "lutum",
+   "kind": "word",
+   "domain": "nature",
+   "prompt": "mud",
+   "answer": "lutum",
+   "forms": "lutum, -ī (n.)",
+   "example": {
+    "la": "quem in luto volutatum totius corporis vestigiis invenimus?",
+    "ref": "Cic. Verr. 2.4.53"
+   }
+  },
+  {
+   "id": "fulmine-ici",
+   "kind": "idiom",
+   "domain": "nature",
+   "prompt": "to be struck by lightning",
+   "answer": "fulmine īcī",
+   "also": [
+    "dē caelō tangī",
+    "fulmine tangī"
+   ],
+   "note": "dē caelō tangī is the formula in lists of prodigies.",
+   "traps": [
+    {
+     "match": [
+      "fulmine capī"
+     ],
+     "reply": "capere is to seize. Lightning strikes or touches: fulmine īcī, fulmine tangī."
+    }
+   ],
+   "example": {
+    "la": "Romulus lactens fulmine ictus",
+    "ref": "Cic. Div. 2.47"
+   }
+  },
+  {
+   "id": "fidem-servare",
+   "kind": "idiom",
+   "domain": "promises",
+   "prompt": "to keep your word",
+   "answer": "fidem servāre",
+   "also": [
+    "fidem praestāre"
+   ],
+   "opposites": [
+    {
+     "la": "fidem fallere",
+     "en": "to break your word"
+    }
+   ],
+   "traps": [
+    {
+     "match": [
+      "fidem tenēre"
+     ],
+     "reply": "The verb with fidem is servāre, or praestāre."
+    }
+   ],
+   "example": {
+    "la": "secundum ea quaero servarisne in eo fidem?",
+    "ref": "Cic. Vat. 15"
+   }
+  },
+  {
+   "id": "fidem-fallere",
+   "kind": "idiom",
+   "domain": "promises",
+   "prompt": "to break your word",
+   "answer": "fidem fallere",
+   "also": [
+    "fidem frangere"
+   ],
+   "opposites": [
+    {
+     "la": "fidem servāre",
+     "en": "to keep your word"
+    }
+   ],
+   "example": {
+    "la": "ad supplicium redire maluit quam fidem hosti datam fallere.",
+    "ref": "Cic. Off. 1.39"
+   }
+  },
+  {
+   "id": "polliceri",
+   "kind": "word",
+   "domain": "promises",
+   "prompt": "to promise",
+   "answer": "pollicērī",
+   "forms": "polliceor, -ērī, pollicitus sum",
+   "also": [
+    "prōmittere"
+   ],
+   "note": "Deponent. With accusative and future infinitive.",
+   "example": {
+    "la": "pollicitusque est sibi eam rem curae futuram",
+    "ref": "Caes. BG 1.33.1"
+   }
+  },
+  {
+   "id": "ius-iurandum",
+   "kind": "word",
+   "domain": "promises",
+   "prompt": "oath",
+   "answer": "iūs iūrandum",
+   "forms": "iūs iūrandum, iūris iūrandī (n.)",
+   "note": "Both halves decline: iūre iūrandō.",
+   "example": {
+    "la": "sed ius iurandum conservandum putabat.",
+    "ref": "Cic. Off. 3.100"
+   }
+  },
+  {
+   "id": "iurare",
+   "kind": "word",
+   "domain": "promises",
+   "prompt": "to swear (an oath)",
+   "answer": "iūrāre",
+   "forms": "iūrō, -āre, -āvī, -ātum",
+   "also": [
+    "iūs iūrandum dare"
+   ],
+   "note": "With accusative and future infinitive.",
+   "example": {
+    "la": "tenentem iurare iussit numquam me in amicitia cum Romanis fore.",
+    "ref": "Nep. Hann. 2"
+   }
+  },
+  {
+   "id": "constituere",
+   "kind": "word",
+   "domain": "decisions",
+   "prompt": "to decide (to do something)",
+   "answer": "cōnstituere",
+   "forms": "cōnstituō, -ere, -stituī, -stitūtum",
+   "also": [
+    "statuere",
+    "dēcernere",
+    "cōnsilium capere"
+   ],
+   "note": "With an infinitive. dēcernere is the word for an official decree.",
+   "example": {
+    "la": "ipse cum tribus legionibus circum Samarobrivam trinis hibernis hiemare constituit",
+    "ref": "Caes. BG 5.53.3"
+   }
+  },
+  {
+   "id": "consilium-capere",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to form a plan",
+   "answer": "cōnsilium capere",
+   "also": [
+    "cōnsilium inīre"
+   ],
+   "note": "Followed by ut or an infinitive. It also serves for “to decide”.",
+   "example": {
+    "la": "subito consilium cepi ut ante quam luceret exirem",
+    "ref": "Cic. Att. 7.10.1"
+   }
+  },
+  {
+   "id": "sententiam-mutare",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to change your mind",
+   "answer": "sententiam mūtāre",
+   "also": [
+    "sententiam commūtāre",
+    "mentem mūtāre"
+   ],
+   "note": "sententia is the view you hold; mēns the whole bent of mind: mūtātā mente (Sall. Cat. 48.1).",
+   "example": {
+    "la": "mutare sententiam turpe est",
+    "ref": "Cic. Mur. 62"
+   }
+  },
+  {
+   "id": "animum-attendere",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to pay attention",
+   "answer": "animum attendere",
+   "also": [
+    "animum advertere",
+    "animum intendere",
+    "attendere"
+   ],
+   "note": "With ad and the accusative. Animum advertere works too, but leans toward noticing; animum intendere is to bend the mind to a task.",
+   "example": {
+    "la": "praesertim cum animum attendisset ad cavendum.",
+    "ref": "Nep. Alc. 5"
+   }
+  },
+  {
+   "id": "tempus-perdere",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to waste time",
+   "answer": "tempus perdere",
+   "also": [
+    "tempus terere"
+   ],
+   "example": {
+    "la": "non ergo perdamus primum statim tempus",
+    "ref": "Quint. Inst. 1.1.19"
+   }
+  },
+  {
+   "id": "occasione-uti",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to take advantage of an opportunity",
+   "answer": "occāsiōne ūtī",
+   "also": [
+    "opportūnitāte ūtī"
+   ],
+   "note": "ūtī takes the ablative. Caesar has ūtī temporis opportūnitāte (BC 2.34.4).",
+   "example": {
+    "la": "sed occasione vincendi strenue est usus.",
+    "ref": "Curt. 4.16.4"
+   }
+  },
+  {
+   "id": "periculum-subire",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to face danger",
+   "answer": "perīculum subīre",
+   "also": [
+    "perīculum adīre"
+   ],
+   "traps": [
+    {
+     "match": [
+      "in perīculō esse",
+      "in perīculō versārī"
+     ],
+     "reply": "That's to be in danger. To go to meet it is perīculum subīre, or adīre."
+    }
+   ],
+   "example": {
+    "la": "Sic et ad subeundum periculum et ad vitandum multum fortuna valuit.",
+    "ref": "Caes. BG 6.30.4"
+   }
+  },
+  {
+   "id": "desperare",
+   "kind": "word",
+   "domain": "decisions",
+   "prompt": "to give up hope",
+   "answer": "dēspērāre",
+   "forms": "dēspērō, -āre, -āvī, -ātum",
+   "also": [
+    "spem abicere",
+    "spem dēpōnere"
+   ],
+   "note": "With dē and the ablative, or an accusative.",
+   "example": {
+    "la": "Aut cur de sua virtute aut de ipsius diligentia desperarent?",
+    "ref": "Caes. BG 1.40.4"
+   }
+  },
+  {
+   "id": "consulere",
+   "kind": "word",
+   "domain": "decisions",
+   "prompt": "to ask someone's advice",
+   "answer": "aliquem cōnsulere",
+   "forms": "cōnsulō, -ere, -suluī, -sultum",
+   "note": "With the accusative. With the dative it means to look after someone's interests.",
+   "traps": [
+    {
+     "match": [
+      "alicui cōnsulere"
+     ],
+     "reply": "With the dative, cōnsulere is to look after someone. To ask advice it takes the accusative: aliquem cōnsulere."
+    }
+   ],
+   "example": {
+    "la": "te consulo, qui philosophum audis",
+    "ref": "Cic. Fam. 9.26.1"
+   }
+  },
+  {
+   "id": "gratias-agere",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to thank",
+   "answer": "grātiās agere",
+   "note": "With the dative of the person.",
+   "traps": [
+    {
+     "match": [
+      "grātiam agere"
+     ],
+     "reply": "With agere it is plural: grātiās agere."
+    }
+   ],
+   "example": {
+    "la": "Terentia tibi et saepe et maximas agit gratias.",
+    "ref": "Cic. Att. 3.5"
+   }
+  },
+  {
+   "id": "poenas-dare",
+   "kind": "idiom",
+   "domain": "decisions",
+   "prompt": "to pay the penalty",
+   "answer": "poenās dare",
+   "also": [
+    "poenās pendere"
+   ],
+   "note": "Dative of the person wronged, genitive of the offence.",
+   "traps": [
+    {
+     "match": [
+      "poenam dare"
+     ],
+     "reply": "The idiom is plural: poenās dare."
+    }
+   ],
+   "example": {
+    "la": "quam ipsum aliquando poenas dare.",
+    "ref": "Cic. Nat. D. 3.81"
+   }
+  },
+  {
+   "id": "bellum-inferre",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to make war on",
+   "answer": "bellum īnferre",
+   "note": "With the dative: fīnitimīs bellum īnferre.",
+   "traps": [
+    {
+     "match": [
+      "bellum ingerere"
+     ],
+     "reply": "ingerere is to heap upon. War is carried against someone: bellum īnferre."
+    }
+   ],
+   "example": {
+    "la": "et minus facile finitimis bellum inferre possent",
+    "ref": "Caes. BG 1.2.4"
+   }
+  },
+  {
+   "id": "proelium-committere",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to join battle",
+   "answer": "proelium committere",
+   "also": [
+    "proelium inīre"
+   ],
+   "example": {
+    "la": "cohortatus suos proelium commisit.",
+    "ref": "Caes. BG 1.25.1"
+   }
+  },
+  {
+   "id": "castra-ponere",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to pitch camp",
+   "answer": "castra pōnere",
+   "opposites": [
+    {
+     "la": "castra movēre",
+     "en": "to break camp"
+    }
+   ],
+   "example": {
+    "la": "iuxtaque murum castra posuit.",
+    "ref": "Caes. BC 1.16.4"
+   }
+  },
+  {
+   "id": "castra-movere",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to break camp",
+   "answer": "castra movēre",
+   "opposites": [
+    {
+     "la": "castra pōnere",
+     "en": "to pitch camp"
+    }
+   ],
+   "example": {
+    "la": "ab confluente Rhodam castra movi",
+    "ref": "Cic. Fam. 10.34.1"
+   }
+  },
+  {
+   "id": "pedem-referre",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to give ground",
+   "answer": "pedem referre",
+   "note": "Of troops falling back before the enemy.",
+   "example": {
+    "la": "barbari constiterunt ac paulum modo pedem rettulerunt.",
+    "ref": "Caes. BG 4.25.2"
+   }
+  },
+  {
+   "id": "pacem-facere",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to make peace",
+   "answer": "pācem facere",
+   "note": "With cum and the ablative.",
+   "example": {
+    "la": "Gabiis receptis Tarquinius pacem cum Aequorum gente fecit",
+    "ref": "Liv. 1.55.1"
+   }
+  },
+  {
+   "id": "proficisci",
+   "kind": "word",
+   "domain": "war and travel",
+   "prompt": "to set out",
+   "answer": "proficīscī",
+   "forms": "proficīscor, -ī, profectus sum",
+   "note": "Deponent.",
+   "example": {
+    "la": "ex Pompeiano proficiscebar ut eo die manerem in Trebulano apud Pontium.",
+    "ref": "Cic. Att. 5.2.1"
+   }
+  },
+  {
+   "id": "navem-solvere",
+   "kind": "idiom",
+   "domain": "war and travel",
+   "prompt": "to set sail",
+   "answer": "nāvem solvere",
+   "also": [
+    "solvere",
+    "vēla dare"
+   ],
+   "note": "solvere alone also means to set sail.",
+   "example": {
+    "la": "Pompeius sub noctem naves solvit.",
+    "ref": "Caes. BC 1.28.3"
+   }
+  }
+ ]
+}
